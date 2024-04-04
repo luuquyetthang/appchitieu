@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:managment/Screens/home.dart';
-import 'package:managment/Screens/statistics.dart';
-import 'package:managment/widgets/bottomnavigationbar.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-
 import 'data/model/add_date.dart';
+import 'Screens/donvi.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   Hive.registerAdapter(AdddataAdapter());
   await Hive.openBox<Add_data>('data');
@@ -20,7 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Bottom(),
+      home: CustomMoney(),
     );
   }
 }

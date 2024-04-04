@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:managment/data/model/add_date.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+import '../widgets/bottomnavigationbar.dart';
 
 class Add_Screen extends StatefulWidget {
   const Add_Screen({super.key});
@@ -22,12 +26,16 @@ class _Add_ScreenState extends State<Add_Screen> {
     'food',
     "Transfer",
     "Transportation",
-    "Education"
+    "Education",
+    "Salary",
+    "Tourism",
+    "Family",
   ];
   final List<String> _itemei = [
     'Income',
     "Expand",
   ];
+
   @override
   void initState() {
     // TODO: implement initState
@@ -57,6 +65,32 @@ class _Add_ScreenState extends State<Add_Screen> {
       ),
     );
   }
+  Future<void> saveData() async {
+    final url = Uri.parse('https://660d04c73a0766e85dbf4c43.mockapi.io/api/baitap');
+    final data = {
+      "chon": selctedItemi,
+      "sotien": amount_c.text,
+      "ngay": date.toIso8601String(),
+      "ghichu": expalin_C.text,
+      "ten": selctedItem
+    };
+
+    final response = await http.post(
+      url,
+      body: json.encode(data),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    print('Mã trạng thái phản hồi: ${response.statusCode}');
+    print('Nội dung phản hồi: ${response.body}');
+
+
+    if (response.statusCode == 200) {
+      Navigator.of(context).pop();
+    } else {
+      throw Exception('Failed to save data');
+    }
+  }
 
   Container main_container() {
     return Container(
@@ -64,6 +98,7 @@ class _Add_ScreenState extends State<Add_Screen> {
         borderRadius: BorderRadius.circular(20),
         color: Colors.white,
       ),
+      margin: EdgeInsets.only(top: 80),
       height: 550,
       width: 340,
       child: Column(
@@ -78,7 +113,6 @@ class _Add_ScreenState extends State<Add_Screen> {
           How(),
           SizedBox(height: 30),
           date_time(),
-          Spacer(),
           save(),
           SizedBox(height: 25),
         ],
@@ -89,38 +123,82 @@ class _Add_ScreenState extends State<Add_Screen> {
   GestureDetector save() {
     return GestureDetector(
       onTap: () {
-        var add = Add_data(
-            selctedItemi!, amount_c.text, date, expalin_C.text, selctedItem!);
-        box.add(add);
-        Navigator.of(context).pop();
+        if (amount_c.text.isEmpty) {
+          // Hiển thị thông báo khi số tiền không được nhập
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Thông báo"),
+                content: Text("Vui lòng nhập số tiền."),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text("OK"),
+                  ),
+                ],
+              );
+            },
+          );
+        } else {
+          saveData();
+          var add = Add_data(
+              selctedItemi!, amount_c.text, date, expalin_C.text, selctedItem!);
+          box.add(add);
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Thông báo"),
+                content: Text("Thêm thành công !!!"),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => Bottom()));
+                    },
+                    child: Text("OK"),
+                  ),
+                ],
+              );
+            },
+          );
+        }
       },
       child: Container(
         alignment: Alignment.center,
+        margin: EdgeInsets.only(top: 20),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
-          color: Color(0xff368983),
+          color: Colors.white,
+          border: Border.all(
+            width: 2,
+            color: Colors.blueGrey,
+          ),
         ),
         width: 120,
         height: 50,
         child: Text(
-          'Save',
+          'Lưu',
           style: TextStyle(
             fontFamily: 'f',
             fontWeight: FontWeight.w600,
-            color: Colors.white,
+            color: Colors.black,
             fontSize: 17,
           ),
         ),
       ),
+
     );
   }
-
   Widget date_time() {
     return Container(
       alignment: Alignment.bottomLeft,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(width: 2, color: Color(0xffC5C5C5))),
+          border: Border.all(width: 2, color: Colors.blueGrey)),
       width: 300,
       child: TextButton(
         onPressed: () async {
@@ -135,7 +213,7 @@ class _Add_ScreenState extends State<Add_Screen> {
           });
         },
         child: Text(
-          'Date : ${date.year} / ${date.day} / ${date.month}',
+          'Ngày : ${date.year} / ${date.day} / ${date.month}',
           style: TextStyle(
             fontSize: 15,
             color: Colors.black,
@@ -144,7 +222,6 @@ class _Add_ScreenState extends State<Add_Screen> {
       ),
     );
   }
-
   Padding How() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -155,7 +232,7 @@ class _Add_ScreenState extends State<Add_Screen> {
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
             width: 2,
-            color: Color(0xffC5C5C5),
+            color: Colors.blueGrey,
           ),
         ),
         child: DropdownButton<String>(
@@ -189,11 +266,11 @@ class _Add_ScreenState extends State<Add_Screen> {
           hint: Padding(
             padding: const EdgeInsets.only(top: 12),
             child: Text(
-              'How',
-              style: TextStyle(color: Colors.grey),
+              'Chọn',
+              style: TextStyle(color: Colors.black),
             ),
           ),
-          dropdownColor: Colors.white,
+          dropdownColor: Colors.blueGrey,
           isExpanded: true,
           underline: Container(),
         ),
@@ -205,24 +282,26 @@ class _Add_ScreenState extends State<Add_Screen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: TextField(
-        keyboardType: TextInputType.number,
+        keyboardType: TextInputType.numberWithOptions(decimal: true),
         focusNode: amount_,
         controller: amount_c,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-          labelText: 'amount',
-          labelStyle: TextStyle(fontSize: 17, color: Colors.grey.shade500),
+          labelText: 'Số tiền',
+          labelStyle: TextStyle(fontSize: 17, color: Colors.black),
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(width: 2, color: Color(0xffC5C5C5))),
+              borderSide: BorderSide(width: 2, color: Colors.blueGrey)
+          ),
           focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(width: 2, color: Color(0xff368983))),
+              borderSide: BorderSide(width: 2, color: Colors.blueGrey
+          ),
         ),
       ),
+      )
     );
   }
-
   Padding explain() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -231,14 +310,14 @@ class _Add_ScreenState extends State<Add_Screen> {
         controller: expalin_C,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-          labelText: 'explain',
-          labelStyle: TextStyle(fontSize: 17, color: Colors.grey.shade500),
+          labelText: 'Ghi chú',
+          labelStyle: TextStyle(fontSize: 17, color: Colors.black),
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(width: 2, color: Color(0xffC5C5C5))),
+              borderSide: BorderSide(width: 2, color: Colors.blueGrey)),
           focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(width: 2, color: Color(0xff368983))),
+              borderSide: BorderSide(width: 2, color: Colors.blueGrey)),
         ),
       ),
     );
@@ -254,7 +333,7 @@ class _Add_ScreenState extends State<Add_Screen> {
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
             width: 2,
-            color: Color(0xffC5C5C5),
+            color: Colors.white,
           ),
         ),
         child: DropdownButton<String>(
@@ -277,7 +356,7 @@ class _Add_ScreenState extends State<Add_Screen> {
                           SizedBox(width: 10),
                           Text(
                             e,
-                            style: TextStyle(fontSize: 18),
+                            style: TextStyle(fontSize: 18,),
                           )
                         ],
                       ),
@@ -300,11 +379,11 @@ class _Add_ScreenState extends State<Add_Screen> {
           hint: Padding(
             padding: const EdgeInsets.only(top: 12),
             child: Text(
-              'Name',
-              style: TextStyle(color: Colors.grey),
+              'Chọn',
+              style: TextStyle(color: Colors.black,),
             ),
           ),
-          dropdownColor: Colors.white,
+          dropdownColor: Colors.blueGrey,
           isExpanded: true,
           underline: Container(),
         ),
@@ -317,9 +396,12 @@ class _Add_ScreenState extends State<Add_Screen> {
       children: [
         Container(
           width: double.infinity,
-          height: 240,
+          height: 150,
           decoration: BoxDecoration(
-            color: Color(0xff368983),
+            image: DecorationImage(
+              image: AssetImage('images/thangne.png'),
+              fit: BoxFit.cover,
+            ),
             borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(20),
               bottomRight: Radius.circular(20),
@@ -338,17 +420,17 @@ class _Add_ScreenState extends State<Add_Screen> {
                       onTap: () {
                         Navigator.of(context).pop();
                       },
-                      child: Icon(Icons.arrow_back, color: Colors.white),
+                      child: Icon(Icons.arrow_back, color: Colors.blueGrey),
                     ),
                     Text(
-                      'Adding',
+                      'Thêm giao dịch',
                       style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w600,
                           color: Colors.white),
                     ),
                     Icon(
-                      Icons.attach_file_outlined,
+                      Icons.tiktok,
                       color: Colors.white,
                     )
                   ],

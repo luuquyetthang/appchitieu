@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:managment/Screens/add.dart';
-import 'package:managment/Screens/home.dart';
+import 'package:managment/Screens/home1.dart';
 import 'package:managment/Screens/statistics.dart';
 
 class Bottom extends StatefulWidget {
@@ -23,7 +23,7 @@ class _BottomState extends State<Bottom> {
               .push(MaterialPageRoute(builder: (context) => Add_Screen()));
         },
         child: Icon(Icons.add),
-        backgroundColor: Color(0xff368983),
+        backgroundColor: Colors.blueGrey,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
@@ -42,7 +42,7 @@ class _BottomState extends State<Bottom> {
                 child: Icon(
                   Icons.home,
                   size: 30,
-                  color: index_color == 0 ? Color(0xff368983) : Colors.grey,
+                  color: index_color == 0 ? Colors.blueGrey : Colors.grey,
                 ),
               ),
               GestureDetector(
@@ -54,7 +54,7 @@ class _BottomState extends State<Bottom> {
                 child: Icon(
                   Icons.bar_chart_outlined,
                   size: 30,
-                  color: index_color == 1 ? Color(0xff368983) : Colors.grey,
+                  color: index_color == 1 ? Colors.blueGrey : Colors.grey,
                 ),
               ),
               SizedBox(width: 10),
@@ -67,7 +67,7 @@ class _BottomState extends State<Bottom> {
                 child: Icon(
                   Icons.account_balance_wallet_outlined,
                   size: 30,
-                  color: index_color == 2 ? Color(0xff368983) : Colors.grey,
+                  color: index_color == 2 ? Colors.blueGrey : Colors.grey,
                 ),
               ),
               GestureDetector(
@@ -79,7 +79,7 @@ class _BottomState extends State<Bottom> {
                 child: Icon(
                   Icons.person_outlined,
                   size: 30,
-                  color: index_color == 3 ? Color(0xff368983) : Colors.grey,
+                  color: index_color == 3 ? Colors.blueGrey : Colors.grey,
                 ),
               ),
             ],

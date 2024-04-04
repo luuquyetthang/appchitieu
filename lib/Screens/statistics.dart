@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:managment/data/utlity.dart';
 import 'package:managment/widgets/chart.dart';
-
 import '../data/model/add_date.dart';
-import '../data/top.dart';
+
+
+
 
 class Statistics extends StatefulWidget {
   const Statistics({Key? key}) : super(key: key);
@@ -20,7 +20,6 @@ class _StatisticsState extends State<Statistics> {
   List f = [today(), week(), month(), year()];
   List<Add_data> a = [];
   int index_color = 0;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +34,6 @@ class _StatisticsState extends State<Statistics> {
       ),
     );
   }
-
   CustomScrollView custom() {
     return CustomScrollView(
       slivers: [
@@ -44,7 +42,7 @@ class _StatisticsState extends State<Statistics> {
             children: [
               SizedBox(height: 20),
               Text(
-                'Statistics',
+                'Số liệu thống kê',
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 20,
@@ -73,7 +71,7 @@ class _StatisticsState extends State<Statistics> {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               color: index_color == index
-                                  ? Color.fromARGB(255, 47, 125, 121)
+                                  ? Colors.blueGrey
                                   : Colors.white,
                             ),
                             alignment: Alignment.center,
@@ -105,7 +103,7 @@ class _StatisticsState extends State<Statistics> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Top Spending',
+                      'Chi tiêu hàng đầu',
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 16,
@@ -114,7 +112,7 @@ class _StatisticsState extends State<Statistics> {
                     Icon(
                       Icons.swap_vert,
                       size: 25,
-                      color: Colors.grey,
+                      color: Colors.blueGrey,
                     ),
                   ],
                 ),
@@ -148,7 +146,7 @@ class _StatisticsState extends State<Statistics> {
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 19,
-                  color: a[index].IN == 'Income' ? Colors.green : Colors.red,
+                  color: a[index].IN == 'Income' ? Colors.blueGrey : Colors.red,
                 ),
               ),
             );
